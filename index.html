@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+
+    <script>
+         
+         function find_all_json_path(){
+            let json_paths_in_textArea_format="";
+                function loop_each_json_element(obj, path=""){
+                    
+                    if(typeof obj ==="object" && obj!=null){
+
+                        if(Array.isArray(obj)){
+                            obj.forEach((item, index) => {
+                                loop_each_json_element(item, `${path}[${index}]`);
+                            });
+                        }
+                        else{
+                            Object.keys(obj).forEach(key => {
+                                loop_each_json_element(obj[key],path?`${path}.${key}`:key);
+                            });
+                        }
+                    } else{
+                        //console.log(`${path} = ${obj}`)
+                        json_paths_in_textArea_format = json_paths_in_textArea_format + path + " : " + obj + `\n`;
+                    }
+
+                    // return json_paths_in_textArea_format;
+                }
+
+                //Extract XML
+                let input = document.getElementById("txtInp")
+
+                let jsonObject = JSON.parse(input.value)
+
+                loop_each_json_element(jsonObject)
+
+                document.getElementById("txtOut").value=json_paths_in_textArea_format;
+        }
+
+        function clearText(){
+            document.getElementById("txtInp").value = '';
+            document.getElementById("txtOut").value = '';
+        }
+
+        function copyAll(){
+
+            let outBx = document.getElementById("txtOut");
+            // outBx.select();
+            // document.execCommand('copy');
+
+            navigator.clipboard.writeText(outBx.value)
+            
+        }
+
+        function copyOnlyPath(){
+            let jsonPath_str = "";
+
+            let outBx = document.getElementById("txtOut");
+            
+            let outputVal = outBx.value;
+            //console.log(`${outputVal}`)
+            
+            let jsonPathsLine_array = outputVal.split("\n");
+
+            jsonPathsLine_array.forEach(function(item){
+                let jsonPath  = item.split(":")[0].trim();
+                //console.log(jsonPath);
+                jsonPath_str = jsonPath_str + jsonPath + "\n";
+            });
+
+            navigator.clipboard.writeText(jsonPath_str)
+           
+        }
+
+        function formatJSON(){
+
+            let inpElement = document.getElementById("txtInp");
+
+            let json_formatted_str = JSON.stringify(inpElement.value, undefined, 2);
+
+            inpElement.value = json_formatted_str;
+            
+        }
+    </script>
+
+    <style>
+        *{
+            font-family: sans-serif;
+            margin: 2px;
+            padding: auto;
+        }
+
+        #pageHeader{
+            background-color: black;
+            color: white;
+            padding: 2px;
+        }
+
+        #pageFooter{
+            background-color: black;
+            color: white;
+            padding: 5px;
+            text-align: end;
+        }
+
+        #pageFooter > h6 > a{
+            color: white;
+        }
+
+        #headerLogo{
+            padding: 8px;
+            margin: 5px;
+        }
+
+        #bodySec{
+            background-color: rgb(235 236 236 / 95%);
+            height: 100vh;
+            width: inherit;
+        }
+
+        #subHeader{
+            font-size: 1.25em;
+            padding-left: 20px;
+            padding-top: 15px;
+            padding-bottom: 4px;
+            /* text-decoration: underline; */
+            color: rgb(6, 6, 6);
+            /* background-color: burlywood; */
+        }
+
+        #dtSec{
+            padding: 20px;
+            padding-top: 10px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        #boxArea{
+            height: 80vh;
+            display: flex;
+            
+            padding-left: 5px; 
+            
+        }
+
+        @media (max-width: 1000px){
+            #boxArea{
+                flex-direction: column;
+                height: 90vh;
+            }
+        }
+
+        #boxArea > .box {
+            border: 1.5px solid rgb(196, 200, 202);
+            box-shadow: inset 0 1px 3px #e1dbdb;
+            border-radius: 5px;
+            background-color: rgba(246, 248, 248, 0.906);
+            /* padding: 1em; */
+            margin: 20px;
+            margin-top: 2px;
+            flex: 1;  
+
+            display: flex;
+            flex-direction: column;
+            
+        }
+
+
+        .textSection{
+            /* background-color: azure; */
+            flex: 1;
+        }
+
+        .btnSection{
+           
+            display: flex;
+            justify-content: flex-end;
+
+            /* background-color: rgb(184, 221, 184); */
+        }
+
+        .btn{
+            background-color: rgb(73, 126, 230);
+            color: white;
+            padding: 6px;
+            margin: 6px;
+            border-radius: 5px;
+            border: 1px solid rgb(50, 135, 191);
+            font-size: 0.82em;
+        }
+        .btn:hover{
+            background-color: rgb(132, 168, 241);
+            border: 1px solid rgb(121, 157, 181);
+        }
+
+        .textSection{
+            padding: 10px;
+            margin: 5px;
+            margin-left: 5px;
+            padding-top: 1px;
+            padding-left: 0px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+            /* background-color: #0f9d58; */
+        }
+        textarea{
+            height: 100%;
+            width: 100%;
+            resize: none;
+            background-color:rgb(245 247 247);
+            border: 0px solid #e7e7e7;
+            border-radius: 2px;
+            padding: 5px;
+            margin: 5px;
+            
+        }
+    </style>
+</head>
+<body>
+    
+    <header id="pageHeader">
+        <h1 id="headerLogo">Developer Tools</h1>
+    </header>
+
+    <div id="bodySec">
+
+        <div id="subHeader">
+            <p>JSON Path Finder</p>
+        </div>
+
+        <div id="dtSec">
+            <div id="boxArea">
+                <div id="inputBx" class="box">
+                    
+                    <div class="btnSection">
+                        <button class="btn" onclick="formatJSON()" disabled>Format</button>
+                        <button class="btn" onclick="find_all_json_path()">Get Path</button>
+                    </div>
+                    <hr>   
+                    <div class="textSection">
+                        <textarea id="txtInp" placeholder="Input JSON.."></textarea>
+                    </div>
+                    
+                </div>
+                <div id="outputBx" class="box">
+                    <div class="btnSection">
+                        <button class="btn" onclick="copyOnlyPath()">Copy Path</button>
+                        <button class="btn" onclick="copyAll()">Copy All</button>
+                        <button class="btn" onclick="clearText()">Clear</button>
+                    </div>
+                    <hr>
+                    <div class="textSection">
+                        <textarea id="txtOut" placeholder="">
+
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer id="pageFooter">
+        <h6>Developed By - <a href="https://in.linkedin.com/in/sujeeth-poojary-ab6440177">Sujeeth</a></h6>
+    </footer>
+
+</body>
+</html>
