@@ -152,17 +152,23 @@
             
         }
 
+        @media screen and (max-width: 500px){
+            .btn{
+                font-size: 0.4rem;
+            }
+
+            #boxArea > .box:is(#inputBx,#outputBx) {
+                margin-left: 6px;
+                margin-right: 6px;
+                margin-top: 2px;
+                
+            }
+        }
+
         @media (max-width: 800px){
             #boxArea{
                 flex-direction: column;
                 height: 90vh;
-            }
-
-        }
-
-        @media (max-width: 500px){
-            .btn{
-                font-size: 0.4rem;
             }
         }
 
