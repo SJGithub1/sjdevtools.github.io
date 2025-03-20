@@ -81,8 +81,12 @@
 
             let inpElement = document.getElementById("txtInp");
 
-            let json_formatted_str = JSON.stringify(inpElement.value, undefined, 2);
+            let jsonObj = JSON.parse(inpElement.value);
 
+            let json_formatted_str = JSON.stringify(jsonObj, null, 4);
+
+            console.log(json_formatted_str)           
+        
             inpElement.value = json_formatted_str;
             
         }
@@ -148,10 +152,17 @@
             
         }
 
-        @media (max-width: 1000px){
+        @media (max-width: 800px){
             #boxArea{
                 flex-direction: column;
                 height: 90vh;
+            }
+
+        }
+
+        @media (max-width: 500px){
+            .btn{
+                font-size: 0.4rem;
             }
         }
 
@@ -191,7 +202,7 @@
             margin: 6px;
             border-radius: 5px;
             border: 1px solid rgb(50, 135, 191);
-            font-size: 0.82em;
+            font-size: 0.82rem;
         }
         .btn:hover{
             background-color: rgb(132, 168, 241);
@@ -238,7 +249,7 @@
                 <div id="inputBx" class="box">
                     
                     <div class="btnSection">
-                        <button class="btn" onclick="formatJSON()" disabled>Format</button>
+                        <button class="btn" onclick="formatJSON()">Format</button>
                         <button class="btn" onclick="find_all_json_path()">Get Path</button>
                     </div>
                     <hr>   
