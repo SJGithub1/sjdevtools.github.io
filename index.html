@@ -1,358 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Home</title>
 
-    <script>
-         
-         function find_all_json_path(){
-            reset_OutBx();
-            try{
-                let json_paths_in_textArea_format="";
-                    function loop_each_json_element(obj, path=""){
-                        
-                        if(typeof obj ==="object" && obj!=null){
-
-                            if(Array.isArray(obj)){
-                                obj.forEach((item, index) => {
-                                    loop_each_json_element(item, `${path}[${index}]`);
-                                });
-                            }
-                            else{
-                                Object.keys(obj).forEach(key => {
-                                    loop_each_json_element(obj[key],path?`${path}.${key}`:key);
-                                });
-                            }
-                        } else{
-                            //console.log(`${path} = ${obj}`)
-                            json_paths_in_textArea_format = json_paths_in_textArea_format + path + " : " + obj + `\n`;
-                        }
-
-                        // return json_paths_in_textArea_format;
-                    }
-
-                    //Extract XML
-                    let input = document.getElementById("txtInp")
-
-                    let jsonObject = JSON.parse(input.value)
-
-                    loop_each_json_element(jsonObject)
-
-                    document.getElementById("txtOut").value=json_paths_in_textArea_format;
-                }
-                catch(err){
-                    display_error_invalidJSON(err.message);
-                }
-        }
-
-        function clearText(){
-            document.getElementById("txtInp").value = '';
-            document.getElementById("txtOut").value = '';
-        }
-
-        function copyAll(){
-
-            let outBx = document.getElementById("txtOut");
-            // outBx.select();
-            // document.execCommand('copy');
-
-            if(outBx.value.trim()===""){
-                display_st_noData()
-            }
-            else{
-                navigator.clipboard.writeText(outBx.value)
-
-                display_st_copySucess();
-            }
-            
-        }
-
-        function copyOnlyPath(){
-            let jsonPath_str = "";
-
-            let outBx = document.getElementById("txtOut");
-            
-            let outputVal = outBx.value;
-            //console.log(`${outputVal}`)
-
-            if(outputVal.trim()===""){
-                display_st_noData();
-            }
-            else{
-                let jsonPathsLine_array = outputVal.split("\n");
-
-                jsonPathsLine_array.forEach(function(item){
-                    let jsonPath  = item.split(":")[0].trim();
-                    //console.log(jsonPath);
-                    jsonPath_str = jsonPath_str + jsonPath + "\n";
-                });
-
-                navigator.clipboard.writeText(jsonPath_str)
-
-                display_st_copySucess();
-            }
-           
-        }
-
-        function formatJSON(){
-            reset_OutBx();
-            try{
-                let inpElement = document.getElementById("txtInp");
-
-                let jsonObj = JSON.parse(inpElement.value);
-
-                let json_formatted_str = JSON.stringify(jsonObj, null, 4);
-
-                console.log(json_formatted_str)           
-            
-                inpElement.value = json_formatted_str;
-            }
-            catch(err){
-                display_error_invalidJSON(err.message)
-            }
-            
-        }
-
-        function display_st_copySucess(){
-            document.getElementById("op_st_text").style.color='green';
-            document.getElementById("op_st_text").innerText="Copied!!"
-
-            setTimeout(function(){
-                document.getElementById("op_st_text").innerText=""
-            },2000);
-        }
-
-        function display_st_noData(){
-
-            document.getElementById("op_st_text").style.color='red';
-            document.getElementById("op_st_text").innerText="No Data!!"
-
-            setTimeout(function(){
-                document.getElementById("op_st_text").innerText=""
-            },2000);
-        }
-
-        function display_error_invalidJSON(errMsg){
-            
-            let outBx = document.getElementById("txtOut");
-
-            outBx.style.color='red';
-            outBx.value='An Error Occurred!! Error: ' + errMsg
-
-        }
-
-        function reset_OutBx(){
-
-            let outBx = document.getElementById("txtOut");
-
-            outBx.style.color='';
-            outBx.value='';
-        }
-    </script>
-
-    <style>
-        *{
-            font-family: sans-serif;
-            margin: 2px;
-            padding: auto;
-        }
-
-        #pageHeader{
-            background-color: rgba(68, 68, 198, 0.845);
-            color: white;
-            padding: 2px;
-        }
-
-        #pageFooter{
-            background-color: rgba(68, 68, 198, 0.845);
-            color: white;
-            padding: 5px;
-            text-align: end;
-        }
-
-        #pageFooter > h6 > a{
-            color: white;
-        }
-
-        #headerLogo{
-            padding: 8px;
-            margin: 5px;
-        }
-
-        #bodySec{
-            background-color: rgb(235 236 236 / 95%);
-            height: 100vh;
-            width: inherit;
-        }
-
-        #subHeader{
-            font-size: 1.25em;
-            padding-left: 20px;
-            padding-top: 15px;
-            padding-bottom: 4px;
-            /* text-decoration: underline; */
-            color: rgb(6, 6, 6);
-            /* background-color: burlywood; */
-            display: flex;
-        }
-
-        #subHeader_status{
-            display: flex;
-            flex-direction: row-reverse;
-            margin-left: auto;
-            padding-right: 5em;
-            font-size: small;
-            color: green;
-            align-items: end;
-        }
-
-        #dtSec{
-            padding: 20px;
-            padding-top: 10px;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-        #boxArea{
-            height: 80vh;
-            display: flex;
-            
-            padding-left: 5px; 
-            
-        }
-
-        @media screen and (max-width: 500px){
-            .btn{
-                font-size: 0.4rem;
-            }
-
-            #boxArea > .box:is(#inputBx,#outputBx) {
-                margin-left: 6px;
-                margin-right: 6px;
-                margin-top: 2px;
-                
-            }
-        }
-
-        @media (max-width: 800px){
-            #boxArea{
-                flex-direction: column;
-                height: 90vh;
-            }
-        }
-
-        #boxArea > .box {
-            border: 1.5px solid rgb(196, 200, 202);
-            box-shadow: inset 0 1px 3px #e1dbdb;
-            border-radius: 5px;
-            background-color: rgba(246, 248, 248, 0.906);
-            /* padding: 1em; */
-            margin: 20px;
-            margin-top: 2px;
-            flex: 1;  
-
-            display: flex;
-            flex-direction: column;
-            
-        }
-
-
-        .textSection{
-            /* background-color: azure; */
-            flex: 1;
-        }
-
-        .btnSection{
-           
-            display: flex;
-            justify-content: flex-end;
-
-            /* background-color: rgb(184, 221, 184); */
-        }
-
-        .btn{
-            background-color: rgb(73, 126, 230);
-            color: white;
-            padding: 6px;
-            margin: 6px;
-            border-radius: 5px;
-            border: 1px solid rgb(50, 135, 191);
-            font-size: 0.82rem;
-        }
-        .btn:hover{
-            background-color: rgb(132, 168, 241);
-            border: 1px solid rgb(121, 157, 181);
-        }
-
-        .textSection{
-            padding: 10px;
-            margin: 5px;
-            margin-left: 5px;
-            padding-top: 1px;
-            padding-left: 0px;
-            padding-right: 20px;
-            padding-bottom: 20px;
-            /* background-color: #0f9d58; */
-        }
-        textarea{
-            height: 100%;
-            width: 100%;
-            resize: none;
-            background-color:rgb(245 247 247);
-            border: 0px solid #e7e7e7;
-            border-radius: 2px;
-            padding: 5px;
-            margin: 5px;
-            
-        }
-    </style>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+
     <header id="pageHeader">
         <h1 id="headerLogo">Developer Tools</h1>
     </header>
 
     <div id="bodySec">
 
-        <div id="subHeader">
-            <div>
-                <p>JSON Path Finder</p>
-            </div>
-            <div id="subHeader_status">
-                <p id="op_st_text"></p>
-            </div>
-            
+        <div id="menuSec">
+            <h5>Menu</h5>
+            <hr>
+            <p onclick="enable_section('xml_path_finder')">Xpath Finder</p>
+            <p onclick="enable_section('json_path_finder')">JSONPath Finder</p>
+			<!-- <p>Base64 Encode</p>
+            <p>Base64 Decode</p>
+            <p>Password Encryption</p> -->
         </div>
 
-        <div id="dtSec">
-            <div id="boxArea">
-                <div id="inputBx" class="box">
-                    
-                    <div class="btnSection">
-                        <button class="btn" onclick="formatJSON()">Format</button>
-                        <button class="btn" onclick="find_all_json_path()">Get Path</button>
+        <div id="contentSec">
+            <div id="xml_path_finder" class="section">
+                <div id="subHeader">
+                    <div>
+                        <p>XML Path Finder</p>
                     </div>
-                    <hr>   
-                    <div class="textSection">
-                        <textarea id="txtInp" placeholder="Input JSON.."></textarea>
+                    <div id="subHeader_status">
+                        <p id="op_st_text"></p>
                     </div>
-                    
+
                 </div>
-                <div id="outputBx" class="box">
-                    <div class="btnSection">
-                        <button class="btn" onclick="copyOnlyPath()">Copy Path</button>
-                        <button class="btn" onclick="copyAll()">Copy All</button>
-                        <button class="btn" onclick="clearText()">Clear</button>
-                    </div>
-                    <hr>
-                    <div class="textSection">
-                        <textarea id="txtOut" placeholder="">
+
+                <div id="dtSec">
+                    <div id="boxArea">
+                        <div id="inputBx" class="box">
+
+                            <div class="btnSection">
+                                <button class="btn" onclick="formatXML()">Format</button>
+                                <button class="btn" onclick="find_all_xml_path()">Get Path</button>
+                            </div>
+                            <hr>
+                            <div class="textSection">
+                                <textarea id="txtInp" placeholder="Input XML.."></textarea>
+                            </div>
+
+                        </div>
+                        <div id="outputBx" class="box">
+                            <div class="btnSection">
+                                <button class="btn" onclick="copyOnlyPath(event)">Copy Path</button>
+                                <button class="btn" onclick="copyAll(event)">Copy All</button>
+                                <button class="btn" onclick="clearText(event)">Clear</button>
+                            </div>
+                            <hr>
+                            <div class="textSection">
+                                <textarea id="txtOut" placeholder="">
 
                         </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="json_path_finder" class="section">
+                <div id="subHeader">
+                    <div>
+                        <p>JSON Path Finder</p>
+                    </div>
+                    <div id="subHeader_status">
+                        <p id="op_st_text"></p>
+                    </div>
+
+                </div>
+
+                <div id="dtSec">
+                    <div id="boxArea">
+                        <div id="inputBx" class="box">
+
+                            <div class="btnSection">
+                                <button class="btn" onclick="formatJSON()">Format</button>
+                                <button class="btn" onclick="find_all_json_path()">Get Path</button>
+                            </div>
+                            <hr>
+                            <div class="textSection">
+                                <textarea id="txtInp" placeholder="Input JSON.."></textarea>
+                            </div>
+
+                        </div>
+                        <div id="outputBx" class="box">
+                            <div class="btnSection">
+                                <button class="btn" onclick="copyOnlyPath(event)">Copy Path</button>
+                                <button class="btn" onclick="copyAll(event)">Copy All</button>
+                                <button class="btn" onclick="clearText(event)">Clear</button>
+                            </div>
+                            <hr>
+                            <div class="textSection">
+                                <textarea id="txtOut" placeholder="">
+
+                                </textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -365,4 +121,5 @@
     </footer>
 
 </body>
+
 </html>
